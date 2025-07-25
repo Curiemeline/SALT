@@ -4,21 +4,21 @@ visibility: public
 
 contributions:
   commands:
-    - id: napari-cellpose-sam.get_reader
-      python_name: napari_cellpose_sam._reader:napari_get_reader
-      title: Open data with Cellpose-Sam Segmentation and Finetuning
+    # # - id: napari-cellpose-sam.get_reader
+    # #   python_name: napari_cellpose_sam._reader:napari_get_reader
+    # #   title: Open data with Cellpose-Sam Segmentation and Finetuning
 
-    - id: napari-cellpose-sam.write_multiple
-      python_name: napari_cellpose_sam._writer:write_multiple
-      title: Save multi-layer data with Cellpose-Sam Segmentation and Finetuning
+    # # - id: napari-cellpose-sam.write_multiple
+    # #   python_name: napari_cellpose_sam._writer:write_multiple
+    # #   title: Save multi-layer data with Cellpose-Sam Segmentation and Finetuning
 
-    - id: napari-cellpose-sam.write_single_image
-      python_name: napari_cellpose_sam._writer:write_single_image
-      title: Save image data with Cellpose-Sam Segmentation and Finetuning
+    # # - id: napari-cellpose-sam.write_single_image
+    # #   python_name: napari_cellpose_sam._writer:write_single_image
+    # #   title: Save image data with Cellpose-Sam Segmentation and Finetuning
 
-    - id: napari-cellpose-sam.make_sample_data
-      python_name: napari_cellpose_sam._sample_data:make_sample_data
-      title: Load sample data from Cellpose-Sam Segmentation and Finetuning
+    # # - id: napari-cellpose-sam.make_sample_data
+    # #   python_name: napari_cellpose_sam._sample_data:make_sample_data
+    # #   title: Load sample data from Cellpose-Sam Segmentation and Finetuning
 
     - id: napari-cellpose-sam.cellpose_sam_widget
       python_name: napari_cellpose_sam._widget:CellposeSAM

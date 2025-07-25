@@ -82,3 +82,10 @@ venv/
 
 # written by setuptools_scm
 **/_version.py
+
+# Files initially imported that I don't use
+._reader.py
+._writer.py
+._sample_data.py
+._testing.py
+src/napari_cellpose_sam/testing.py

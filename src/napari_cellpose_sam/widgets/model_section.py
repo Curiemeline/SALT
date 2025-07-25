@@ -9,7 +9,7 @@ from qtpy.QtWidgets import (
 )
 
 
-class ModelParametrizationWidget(QGroupBox):
+class ModelParamWidget(QGroupBox):
     def __init__(self):
         super().__init__("1. Model Parametrization")
         layout = QFormLayout()
@@ -42,3 +42,14 @@ class ModelParametrizationWidget(QGroupBox):
         layout.addRow("Cellprobs Threshold:", self.cellprob_thresh)
 
         self.setLayout(layout)
+
+    def get_model_params(self):
+        """
+        Retourne un dict avec tous les paramètres actuels du widget.
+        """
+        return {
+            "model": self.model_select.currentText(),
+            "custom_model_path": self.custom_model_path.text().strip(),
+            "flow_threshold": self.flow_thresh.value(),
+            "cellprob_threshold": self.cellprob_thresh.value(),
+        }

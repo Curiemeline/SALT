@@ -20,19 +20,25 @@ def segment_image_stack(
     if model_type == "custom model" and model_path:
         model = models.CellposeModel(gpu=True, pretrained_model=model_path)
     else:
-        model = models.CellposeModel(gpu=True, model_type=model_type)
+        model = models.CellposeModel(gpu=True)
 
     # Create output folder
     os.makedirs(save_path, exist_ok=True)
 
     for idx in range(image_stack.shape[0]):
         img = image_stack[idx]
-        masks, flows, styles, diams = model.eval(
+        result = model.eval(
             img,
-            channels=[0, 0],
+            # channels=[0, 0],
             flow_threshold=flow_threshold,
             cellprob_threshold=cellprob_threshold,
         )
+
+        if len(result) == 4:
+            masks, flows, styles, diams = result
+        else:
+            masks, flows, styles = result
+            # diams = None
 
         # Save mask
         imwrite(
@@ -42,14 +48,14 @@ def segment_image_stack(
 
         # Optionally save other outputs
         if save_flows:
-            np.save(os.path.join(save_path, f"flow_{idx:03d}.npy"), flows[0])
+            imwrite(os.path.join(save_path, f"flow_{idx:03d}.tif"), flows[0])
         if save_outlines:
-            np.save(
-                os.path.join(save_path, f"outlines_{idx:03d}.npy"), flows[2]
+            imwrite(
+                os.path.join(save_path, f"outlines_{idx:03d}.tif"), flows[2]
             )
         if save_cellprob:
-            np.save(
-                os.path.join(save_path, f"cellprob_{idx:03d}.npy"), flows[1]
+            imwrite(
+                os.path.join(save_path, f"cellprob_{idx:03d}.tif"), flows[1]
             )
 
 
@@ -63,14 +69,20 @@ def segment_single_slice(
     if model_type == "custom model" and model_path:
         model = models.CellposeModel(gpu=True, pretrained_model=model_path)
     else:
-        model = models.CellposeModel(gpu=True, model_type=model_type)
+        model = models.CellposeModel(gpu=True)
 
-    masks, flows, styles, diams = model.eval(
+    result = model.eval(
         image,
-        channels=[0, 0],
+        # channels=[0, 0],
         flow_threshold=flow_threshold,
         cellprob_threshold=cellprob_threshold,
     )
+
+    if len(result) == 4:
+        masks, flows, styles, diams = result
+    else:
+        masks, flows, styles = result
+        # diams = None
 
     return masks, flows
 
