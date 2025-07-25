@@ -33,6 +33,7 @@ dependencies = [
     "magicgui",
     "qtpy",
     "scikit-image",
+    "npe2", # Recommended for compatibility with napari 0.5+
 ]
 
 [project.optional-dependencies]
