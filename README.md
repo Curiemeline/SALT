@@ -24,6 +24,14 @@ https://napari.org/stable/plugins/index.html
 -->
 
 ## Installation
+### Local installation
+
+````
+pip install -e ".[all]"
+````
+-e installs in dev mode, allowing modification in the code without needing to reinstall everytime.
+.[all] installs dependencies defined in ```pyproject.toml```
+### Online installation (when plugin published on PyPi)
 
 You can install `napari-cellpose-sam` via [pip]:
 
