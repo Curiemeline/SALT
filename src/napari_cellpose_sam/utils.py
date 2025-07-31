@@ -53,6 +53,10 @@ def save_img_masks(
 
     image = img_layer.data
     mask_data = mask_layer.data
+    base_name = img_layer.name
+    base_name = os.path.splitext(base_name)[
+        0
+    ]  # remove .tif or .tiff or whatever extension
     print(type(image), type(mask_data))
 
     if mask_data.shape[0] != image.shape[0]:
@@ -91,8 +95,16 @@ def save_img_masks(
         img = image[i]
         msk = mask_data[i]
 
-        image_filename = os.path.join(save_path, f"image_{i}.tif")
-        mask_filename = os.path.join(save_path, f"image_{i}_masks.tif")
+        if len(image) == 1:
+            image_filename = os.path.join(save_path, f"{base_name}.tif")
+            mask_filename = os.path.join(save_path, f"{base_name}_masks.tif")
+        else:
+            image_filename = os.path.join(
+                save_path, f"{base_name}_frame{i}.tif"
+            )
+            mask_filename = os.path.join(
+                save_path, f"{base_name}_frame{i}_masks.tif"
+            )
 
         imwrite(image_filename, img.astype("uint16"))
         imwrite(mask_filename, msk.astype("uint16"))
