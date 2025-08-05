@@ -20,7 +20,7 @@ from tifffile import imwrite
 from napari_cellpose_sam.segmentation import (
     segment_single_slice,
 )
-from napari_cellpose_sam.utils import browse_folder
+from napari_cellpose_sam.utils import browse_file, browse_folder
 
 
 class SegmentationWidget(QGroupBox):
@@ -34,15 +34,15 @@ class SegmentationWidget(QGroupBox):
         self.layer_select = QComboBox()
         layout.addRow("Select Layer:", self.layer_select)
 
-        # Input folder
+        # Input file
         input_layout = QHBoxLayout()
-        self.input_folder = QLineEdit()
+        self.input_file = QLineEdit()
         self.browse_input = QPushButton("Browse")
-        input_layout.addWidget(self.input_folder)
+        input_layout.addWidget(self.input_file)
         input_layout.addWidget(self.browse_input)
-        layout.addRow("Input Folder:", input_layout)
+        layout.addRow("Input file:", input_layout)
         self.browse_input.clicked.connect(
-            lambda: browse_folder(self.input_folder)
+            lambda: browse_file(self.input_file)
         )  # You need lambda: to call another function with arguments. If we don't use it, it will immediately execute browse_folder() when the widget is created, before clicking the button.
         # It creates an anonymous wrapper function that calls browse_folder with the input_folder as an argument.
 
@@ -78,10 +78,11 @@ class SegmentationWidget(QGroupBox):
         self.segment_all_btn.clicked.connect(
             self.segment_all_slices
         )  # Qt knows that when the button is clicked, just call this method.
-
+        
         # Refresh layer list when layers change
         self.viewer.layers.events.inserted.connect(self.refresh_layer_list)
         self.viewer.layers.events.removed.connect(self.refresh_layer_list)
+        self.viewer.layers.events.changed.connect(self.refresh_layer_list)
 
         # Initial refresh
         QTimer.singleShot(200, self.refresh_layer_list)
