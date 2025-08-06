@@ -56,10 +56,10 @@ def split_train_test(finetune_dir, train_ratio=0.8, seed=42):
 def finetune_cellpose(output_path, epochs, lr, model_name):
     
     output_path = Path(output_path)
-    print(output_path)
+    print("output_path in finetune_cellpose: ", output_path)
     train_dir = output_path.parent / "Train"
     test_dir = output_path.parent / "Test"
-    save_dir = output_path.parent.parent
+    save_dir = output_path.parent   # Path where the model and loss curve will be saved.
 
     save_dir.mkdir(parents=True, exist_ok=True)
     train_dir.mkdir(parents=True, exist_ok=True)
@@ -98,6 +98,7 @@ def finetune_cellpose(output_path, epochs, lr, model_name):
     return save_dir, train_losses, test_losses
 
 def save_loss_curve(save_path, train_losses, test_losses, model_name):
+    print(save_path)
     plt.figure()
     plt.plot(train_losses, label="Train Loss")
     plt.plot(test_losses, label="Test Loss", linestyle='--')

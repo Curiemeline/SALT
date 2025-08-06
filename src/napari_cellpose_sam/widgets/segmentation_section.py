@@ -262,12 +262,14 @@ from napari_cellpose_sam.segmentation import (
 )
 from napari_cellpose_sam.utils import browse_file, browse_folder
 
+from pathlib import Path
 
 class SegmentationWidget(QGroupBox):
-    def __init__(self, viewer, model_tab):
+    def __init__(self, viewer, model_tab, new_analysis_widget=None):
         super().__init__("2. Segmentation")
         self.viewer = viewer
         self.model_tab = model_tab
+        self.new_analysis_widget = new_analysis_widget
         layout = QFormLayout()
 
         # Select Layer
@@ -283,13 +285,13 @@ class SegmentationWidget(QGroupBox):
         layout.addRow("Input file:", input_layout)
         self.browse_input.clicked.connect(lambda: browse_file(self.input_file))
 
-        # Save Path
+        # Save Path (optional)
         save_layout = QHBoxLayout()
         self.save_path = QLineEdit()
         self.browse_save = QPushButton("Browse")
         save_layout.addWidget(self.save_path)
         save_layout.addWidget(self.browse_save)
-        layout.addRow("Save Path:", save_layout)
+        layout.addRow("Save Path (optional):", save_layout)
         self.browse_save.clicked.connect(lambda: browse_folder(self.save_path))
 
         # Output checkboxes
@@ -302,25 +304,13 @@ class SegmentationWidget(QGroupBox):
 
         # Segmentation button
         self.segment_all_btn = QPushButton("Segment image")
-        self.segment_all_btn.setToolTip("Segment full 2D image or all frames of a 3D stack.")
         layout.addRow(self.segment_all_btn)
-
-        # # Optional: help label for testing
-        # self.param_help_label = QLabel("\u2139\ufe0f For testing parameters, load a 2D image and segment it.")
-        # self.param_help_label.setStyleSheet("color: gray; font-size: 10pt")
-        # layout.addRow(self.param_help_label)
-
         self.setLayout(layout)
 
-        # Connect segmentation button
         self.segment_all_btn.clicked.connect(self.segment_image)
-
-        # Refresh layer list when layers change
         self.viewer.layers.events.inserted.connect(self.refresh_layer_list)
         self.viewer.layers.events.removed.connect(self.refresh_layer_list)
         self.viewer.layers.events.changed.connect(self.refresh_layer_list)
-
-        # Initial refresh
         QTimer.singleShot(200, self.refresh_layer_list)
 
     def refresh_layer_list(self, event: Event = None):
@@ -337,11 +327,15 @@ class SegmentationWidget(QGroupBox):
             show_info("No image layer selected.")
             return
 
+        # Priorité : save_path > analysis_dir/segmented_frames/
         output_dir = self.save_path.text().strip()
         if not output_dir:
-            show_info("Please select a save path before segmenting.")
-            return
-        os.makedirs(output_dir, exist_ok=True)
+            if self.new_analysis_widget and self.new_analysis_widget.get_analysis_dir():
+                output_dir = Path(self.new_analysis_widget.get_analysis_dir()) / "segmented_frames"
+                os.makedirs(output_dir, exist_ok=True)
+            else:
+                show_info("No output path specified and no analysis initialized.")
+                return
 
         layer_name = self.layer_select.currentText()
         base_name = os.path.splitext(layer_name)[0]
@@ -385,8 +379,8 @@ class SegmentationWidget(QGroupBox):
 
         else:
             # === 3D image ===
-            stack_frame_dir = os.path.join(output_dir, f"{base_name}_output")
-            os.makedirs(stack_frame_dir, exist_ok=True)
+            # output_dir = os.path.join(output_dir, f"{base_name}_output")  # We don't wanna create a sub folder anymore as it is already created in the new alysis tree structure.
+            # os.makedirs(output_dir, exist_ok=True)
 
             masks_list = []
             flows_list = [] if self.out_flows.isChecked() else None
@@ -404,14 +398,14 @@ class SegmentationWidget(QGroupBox):
 
                 masks_list.append(masks)
                 imwrite(
-                    os.path.join(stack_frame_dir, f"{base_name}_{idx:03d}_mask.tif"),
+                    os.path.join(output_dir, f"{base_name}_{idx:03d}_mask.tif"),
                     masks.astype(np.uint16),
                 )
 
                 if self.out_flows.isChecked():
                     flows_list.append(flows[0])
                     imwrite(
-                        os.path.join(stack_frame_dir, f"{base_name}_{idx:03d}_flow.tif"),
+                        os.path.join(output_dir, f"{base_name}_{idx:03d}_flow.tif"),
                         flows[0],
                     )
 
@@ -419,19 +413,19 @@ class SegmentationWidget(QGroupBox):
                     outline = masks_to_outlines(masks)
                     outlines_list.append(outline.astype(np.uint8) * 255)
                     imwrite(
-                        os.path.join(stack_frame_dir, f"{base_name}_{idx:03d}_outlines.tif"),
+                        os.path.join(output_dir, f"{base_name}_{idx:03d}_outlines.tif"),
                         outline.astype(np.uint8) * 255,
                     )
 
                 if self.out_probs.isChecked():
                     probs_list.append(flows[2])
                     imwrite(
-                        os.path.join(stack_frame_dir, f"{base_name}_{idx:03d}_cellprob.tif"),
+                        os.path.join(output_dir, f"{base_name}_{idx:03d}_cellprob.tif"),
                         flows[2],
                     )
 
             # === Create 'stack' subfolder ===
-            stack_dir = os.path.join(stack_frame_dir, "stack")
+            stack_dir = os.path.join(output_dir, "stack")
             os.makedirs(stack_dir, exist_ok=True)
 
             # === Save and display full stacks ===
