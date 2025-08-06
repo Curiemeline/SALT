@@ -1,4 +1,6 @@
 from qtpy.QtWidgets import QComboBox, QFormLayout, QGroupBox, QPushButton
+from qtpy.QtCore import QTimer
+from napari.utils.notifications import show_info
 
 
 class MorphologyWidget(QGroupBox):
@@ -8,8 +10,8 @@ class MorphologyWidget(QGroupBox):
         layout = QFormLayout()
 
         # Select label layer
-        self.label_select = QComboBox()
-        layout.addRow("Select Label Layer:", self.label_select)
+        self.label_layer = QComboBox()
+        layout.addRow("Select Label Layer:", self.label_layer)
 
         # Morphological operations
         self.rename_btn = QPushButton("Rename into committed_objects")
@@ -24,14 +26,30 @@ class MorphologyWidget(QGroupBox):
         layout.addRow(self.open_btn)
         layout.addRow(self.close_btn)
 
-        self.setLayout(layout)
-        self.refresh_label_layers()
+        self.rename_btn.clicked.connect(self.rename_layer)
 
-    def refresh_label_layers(self):
-        self.label_select.clear()
-        label_layers = [
-            layer.name
-            for layer in self.viewer.layers
-            if layer._type_string == "labels"
-        ]
-        self.label_select.addItems(label_layers)
+        self.setLayout(layout)
+        self.refresh_labels_layers()
+
+        # Refresh layer list when layers change
+        self.viewer.layers.events.inserted.connect(self.refresh_labels_layers)
+        self.viewer.layers.events.removed.connect(self.refresh_labels_layers)
+        self.viewer.layers.events.changed.connect(self.refresh_labels_layers)
+
+        # Initial refresh
+        QTimer.singleShot(200, self.refresh_labels_layers)
+        
+    def refresh_labels_layers(self, event=None):
+        self.label_layer.clear()
+
+        for layer in self.viewer.layers:
+
+            if layer._type_string == "labels":
+                self.label_layer.addItem(layer.name, userData=layer)
+
+    def rename_layer(self):
+        selected_layer_name = self.label_layer.currentText()
+        if selected_layer_name:
+            layer = self.viewer.layers[selected_layer_name]
+            layer.name = "committed_objects"
+            show_info("Layer renamed to 'committed_objects'")
