@@ -9,6 +9,9 @@ import shutil
 from cellpose import io, models, train
 import numpy as np
 
+device = torch.device("mps" if torch.backends.mps.is_available() else
+                      "cuda" if torch.cuda.is_available() else "cpu")
+
 def split_train_test(finetune_dir, train_ratio=0.8, seed=42):
     random.seed(seed)
     finetune_dir = Path(finetune_dir)
@@ -73,17 +76,40 @@ def finetune_cellpose(output_path, epochs, lr, model_name):
                                     mask_filter="_masks",look_one_level_down=False)  # !!! Need to add str to train_dir and test_dir because they are Path objects defined above, and io.load_train_test_data expects strings
     images, labels, image_names, test_images, test_labels, image_names_test = output
 
-    print(len(test_labels))
+    # Cast data to float32 before training
+    images = [img.astype(np.float32) for img in images]
+    labels = [lbl.astype(np.float32) for lbl in labels]
+    test_images = [img.astype(np.float32) for img in test_images]
+    test_labels = [lbl.astype(np.float32) for lbl in test_labels]
+
+    print("test labels len",len(test_labels))
+    print("unique values in test labels:")
     print([np.unique(lbl) for lbl in test_labels])
+    print("shapes of test labels:")
     print([lbl.shape for lbl in test_labels])
 
-    device = torch.device("mps")
+    # Cast data to float32 and labels to int32 before training. Let cellpose handle the conversion to torch tensors.
+    images = np.array([img.astype(np.float32) for img in images])
+    labels = np.array([lbl.astype(np.int32)   for lbl in labels])       # labels = entiers !
+    test_images = np.array([img.astype(np.float32) for img in test_images])
+    test_labels = np.array([lbl.astype(np.int32)   for lbl in test_labels])
+
+    print("Using device:", device)
     model = CellposeModel(gpu=True, device=device, pretrained_model='cpsam')
+    
+    # Très important : forcer tous les poids/buffers en float32
+    net = model.net.float()
+    net.dtype = torch.float32 
+    print("net dtype:", next(model.net.parameters()).dtype)
+    print("images dtype:", images.dtype)
+    # # # torch.set_default_dtype(torch.float32)
+    # # # model.net = model.net.to(dtype=torch.float32, device=device)
+    
     print("GPU disponible:", torch.backends.mps.is_available())
     print("GPU utilisé:", model.device)
     print("lr: ", lr, "epochs: ", epochs)
     model_path, train_losses, test_losses = train.train_seg(
-        model.net,
+        net,
         model_name=model_name,
         save_path=save_dir,
         train_data=images, train_labels=labels,
