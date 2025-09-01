@@ -1,14 +1,24 @@
-import os
-from qtpy.QtWidgets import (
-    QComboBox, QDoubleSpinBox, QFormLayout, QGroupBox, QHBoxLayout,
-    QLineEdit, QPushButton, QSpinBox
-)
-from napari.utils.notifications import show_info
-from napari_cellpose_sam.utils import browse_folder, save_img_masks
-from tifffile import imwrite
-from napari_cellpose_sam.finetuning import save_loss_curve, split_train_test, finetune_cellpose
-
 from pathlib import Path
+
+from napari.utils.notifications import show_info
+from qtpy.QtWidgets import (
+    QComboBox,
+    QDoubleSpinBox,
+    QFormLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLineEdit,
+    QPushButton,
+    QSpinBox,
+)
+
+from napari_cellpose_sam.finetuning import (
+    finetune_cellpose,
+    save_loss_curve,
+    split_train_test,
+)
+from napari_cellpose_sam.utils import browse_folder, save_img_masks
+
 
 class FinetuneWidget(QGroupBox):
     def __init__(self, viewer, new_analysis_widget=None):
@@ -72,6 +82,7 @@ class FinetuneWidget(QGroupBox):
         # Auto-refresh layer lists
         self.viewer.layers.events.inserted.connect(self.refresh_layer_lists)
         self.viewer.layers.events.removed.connect(self.refresh_layer_lists)
+        self.viewer.layers.events.reordered.connect(self.refresh_layer_lists)
 
     def refresh_layer_lists(self, event=None):
         self.image_layer.clear()
@@ -89,9 +100,11 @@ class FinetuneWidget(QGroupBox):
         if not text:
             return None  # No restriction
         try:
-            start, end = map(int, text.split('-'))
+            start, end = map(int, text.split("-"))
             return list(range(start, end + 1))
-        except Exception as e:
+        except (
+            ValueError
+        ) as e:  # Occurs when conversion to int fails. User probably entered something invalid.
             print(f"Invalid frame format '{text}': {e}")
             return None
 
@@ -120,12 +133,16 @@ class FinetuneWidget(QGroupBox):
             return
 
         frame_indices = self.parse_frames()
-        save_img_masks(self.viewer, img_layer, label_layer, save_path, frame_indices)
-        
+        save_img_masks(
+            self.viewer, img_layer, label_layer, save_path, frame_indices
+        )
+
     def split_dataset(self):
         folder = self.get_finetune_dir()
         if not folder:
-            show_info("Please specify a finetune folder or create a new analysis.")
+            show_info(
+                "Please specify a finetune folder or create a new analysis."
+            )
             return
 
         train_dir, test_dir = split_train_test(folder)
@@ -136,7 +153,9 @@ class FinetuneWidget(QGroupBox):
         model_name = self.model_name.text().strip()
 
         if folder is None:
-            show_info("Please specify a finetune folder or create a new analysis.")
+            show_info(
+                "Please specify a finetune folder or create a new analysis."
+            )
             return
 
         if not model_name:
@@ -160,26 +179,16 @@ class FinetuneWidget(QGroupBox):
             output_path=folder,
             epochs=epochs,
             lr=learning_rate,
-            model_name=model_name
+            model_name=model_name,
         )
-        print("curve saved to: ",folder.parent / "models")
-        save_loss_curve(folder.parent / "models", train_losses, test_losses, model_name)
-        show_info(f"Finetuning completed. Model saved to {folder.parent}/models")
+        print("curve saved to: ", folder.parent / "models")
+        save_loss_curve(
+            folder.parent / "models", train_losses, test_losses, model_name
+        )
+        show_info(
+            f"Finetuning completed. Model saved to {folder.parent}/models"
+        )
         print("Model saved to:", f"{folder.parent}/models")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # # from qtpy.QtWidgets import (
@@ -231,7 +240,7 @@ class FinetuneWidget(QGroupBox):
 # #         self.save_masks_btn = QPushButton("Save Masks")
 # #         layout.addRow(self.save_masks_btn)
 # #         self.save_masks_btn.clicked.connect(lambda: save_masks(self.viewer, self.image_layer, self.label_layer, self.finetune_folder, self.frames))
-        
+
 # #         # Epochs
 # #         self.epochs = QSpinBox()
 # #         self.epochs.setRange(1, 1000)
@@ -251,7 +260,7 @@ class FinetuneWidget(QGroupBox):
 
 # #         self.setLayout(layout)
 # #         self.refresh_layer_list()
-        
+
 # #         # Refresh when label layers are added or removed
 # #         self.viewer.layers.events.inserted.connect(self.refresh_layer_list)
 # #         self.viewer.layers.events.removed.connect(self.refresh_layer_list)
