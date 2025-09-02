@@ -1,5 +1,6 @@
-from qtpy.QtWidgets import QTabWidget, QVBoxLayout, QWidget
+from qtpy.QtWidgets import QTabWidget, QVBoxLayout, QWidget, QGroupBox
 
+from .widgets.new_analysis_section import NewAnalysisWidget
 from .widgets.finetune_section import FinetuneWidget
 from .widgets.model_section import ModelParamWidget
 from .widgets.morpho_section import MorphologyWidget
@@ -11,12 +12,19 @@ class CellposeSAM(QWidget):
         super().__init__()
         self.viewer = napari_viewer
 
-        layout = QVBoxLayout()
-        tabs = QTabWidget()
+        outer_layout = QVBoxLayout()
+        main_group = QGroupBox("CellposeSAM (Cellpose-SAM Segmentation and Finetuning)")
+        main_layout = QVBoxLayout()
 
+        # New Analysis Widget (en haut)
+        self.new_analysis_tab = NewAnalysisWidget(self.viewer)
+        main_layout.addWidget(self.new_analysis_tab)
+
+        # Tabs
+        tabs = QTabWidget()
         self.model_tab = ModelParamWidget()
-        self.seg_tab = SegmentationWidget(self.viewer, self.model_tab)
-        self.finetune_tab = FinetuneWidget(self.viewer)
+        self.seg_tab = SegmentationWidget(self.viewer, self.model_tab, new_analysis_widget=self.new_analysis_tab)
+        self.finetune_tab = FinetuneWidget(self.viewer, new_analysis_widget=self.new_analysis_tab)
         self.morpho_tab = MorphologyWidget(self.viewer)
 
         tabs.addTab(self.model_tab, "Model Parametrization")
@@ -24,5 +32,7 @@ class CellposeSAM(QWidget):
         tabs.addTab(self.finetune_tab, "Finetuning")
         tabs.addTab(self.morpho_tab, "Others")
 
-        layout.addWidget(tabs)
-        self.setLayout(layout)
+        main_layout.addWidget(tabs)
+        main_group.setLayout(main_layout)
+        outer_layout.addWidget(main_group)
+        self.setLayout(outer_layout)

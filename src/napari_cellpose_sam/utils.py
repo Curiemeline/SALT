@@ -1,8 +1,21 @@
 import os
+from pathlib import Path
 
 from napari.utils.notifications import show_info
 from qtpy.QtWidgets import QFileDialog
 from tifffile import imwrite
+
+
+def create_analysis_structure(base_path: Path, experiment_name: str) -> Path:
+    """
+    Creates a new file structure to launch a image analysis.
+    REturns root folder path of this analysis.
+    """
+    analysis_dir = base_path / experiment_name
+    subdirs = ["raw", "segmented_frames", "segmented_stacks", "finetune"]
+    for subdir in subdirs:
+        (analysis_dir / subdir).mkdir(parents=True, exist_ok=True)
+    return analysis_dir
 
 
 def browse_file(line_edit):
