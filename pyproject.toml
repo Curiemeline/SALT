@@ -1,3 +1,5 @@
+# pyproject.toml ne peut installer que des packages dispo sur PyP
+
 [project]
 name = "napari-cellpose-sam"
 dynamic = ["version"]
@@ -35,6 +37,7 @@ dependencies = [
     "qtpy",
     "scikit-image",
     "npe2", # Recommended for compatibility with napari 0.5+
+    "matplotlib", # Used for loss curves
 ]
 
 [project.optional-dependencies]
