@@ -58,7 +58,7 @@ pip install -e ".[all]"
 conda install -c conda-forge micro_sam
 ````
 
-### Online installation (when plugin published on PyPi)
+<!-- ### Online installation (when plugin published on PyPi)
 
 You can install `napari-cellpose-sam` via [pip]:
 
@@ -76,7 +76,7 @@ To install latest development version :
 
 ```
 pip install git+https://github.com/Curiemeline/napari-cellpose-sam.git
-```
+``` -->
 
 ## Key Features
 
@@ -90,7 +90,7 @@ pip install git+https://github.com/Curiemeline/napari-cellpose-sam.git
 3. Segmentation
 * Uses Cellpose-SAM or user's custom model,
 * Segments 2D/3D images,
-* Parameters adjustable through interface,
+* Model's Parameters adjustable through interface,
 * Automatically saves masks into a clean directory structure,
 * Automatically uses GPU if available.
 
