@@ -78,7 +78,10 @@ To install latest development version :
 pip install git+https://github.com/Curiemeline/napari-cellpose-sam.git
 ``` -->
 
+
 ## Key Features
+<img width="1506" height="940" alt="fullscreen" src="https://github.com/user-attachments/assets/4f608fd7-5ab0-4c29-908b-70cbfdbaac2e" />
+
 
 1. Create New Analysis
 * Generates a tree structure given a root folder (raw/, segmented_frames/, segmented_stack/, finetune/).
@@ -87,24 +90,34 @@ pip install git+https://github.com/Curiemeline/napari-cellpose-sam.git
 * Load images (single frame or 3D stack),
 * Smooth navigation across z-stacks.
 
-3. Segmentation
+3. Model's Parameters adjustable through interface
+
+<img width="490" height="549" alt="Segmentation" src="https://github.com/user-attachments/assets/e4f4053e-3639-4c65-b96a-32d0588d6f32" />
+
+4. Segmentation
 * Uses Cellpose-SAM or user's custom model,
 * Segments 2D/3D images,
-* Model's Parameters adjustable through interface,
-* Automatically saves masks into a clean directory structure,
 * Automatically uses GPU if available.
 
-4. Interactive Annotation
+4bis. Interactive Annotation using Microscopy SAM (refer to their [documentation] (https://computational-cell-analytics.github.io/micro-sam/micro_sam.html) )
 * Uses SAM for Microscopy (microsam),
 * Adds rectangles, squares, circles, points, etc. to define regions of interest,
 * Erases wrong labels,
-* Saves each image/mask into finetune/ folder by default (custom path can be provided).
+  
+<img width="491" height="551" alt="Finetune" src="https://github.com/user-attachments/assets/d77fbd66-fe0e-4fc5-81a0-5e6217fb889f" />
 
 5. Finetuning
+* Saves each image/mask into finetune/ folder by default (custom path can be provided),
 * Selects your annotations to finetune a Cellpose model,
 * Parameters (epochs, learning rate, name) adjustable through interface,
 * Launch training directly from Napari,
 * Automatically uses GPU if available.
+
+<img width="487" height="546" alt="Others" src="https://github.com/user-attachments/assets/5a76d644-c855-41cb-b31c-a1191a88c1d2" />
+
+6. Others (Morphology)
+* Automatically renames one layer into 'committed_objects',
+* Applies morphological operations (Erode, Dilate, Open, Close)
 
 
 ## Contributing
