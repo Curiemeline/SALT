@@ -22,16 +22,44 @@ https://github.com/napari/napari-plugin-template#getting-started
 and review the napari docs for plugin developers:
 https://napari.org/stable/plugins/index.html
 -->
+# Introduction
 
+This Napari plugin was developed to simplify annotation, segmentation, and finetuning of Cellpose models directly within a graphical interface.
+Combining strengths of Cellpose-SAM and SAM for Microscopy (microsam), it is designed for biologists, imaging engineers, and data scientists who want to unify their analysis pipeline without relying on the command line.
+
+You can find the video of the [demo](https://youtu.be/pRMSdBIrcr4)
 ## Installation
 ### Local installation
+
+1. Create a conda environment on python 3.10:
+
+````
+conda create -n cellpose-sam python=3.10
+conda activate cellpose-sam
+````
+
+2. Fetch the code from this repository and move to the directory:
+
+````
+git clone https://github.com/Curiemeline/napari-cellpose-sam.git
+cd napari-cellpose-sam
+````
+
+3. Install the plugin locally:
 
 ````
 pip install -e ".[all]"
 ````
 -e installs in dev mode, allowing modification in the code without needing to reinstall everytime.
 .[all] installs dependencies defined in ```pyproject.toml```
-### Online installation (when plugin published on PyPi)
+
+4. Microsam install (done separately because only available on conda, refer to their document here) :
+
+````
+conda install -c conda-forge micro_sam
+````
+
+<!-- ### Online installation (when plugin published on PyPi)
 
 You can install `napari-cellpose-sam` via [pip]:
 
@@ -45,13 +73,52 @@ If napari is not already installed, you can install `napari-cellpose-sam` with n
 pip install "napari-cellpose-sam[all]"
 ```
 
-
 To install latest development version :
 
 ```
 pip install git+https://github.com/Curiemeline/napari-cellpose-sam.git
-```
+``` -->
 
+
+## Key Features
+<img width="1506" height="940" alt="fullscreen" src="https://github.com/user-attachments/assets/4f608fd7-5ab0-4c29-908b-70cbfdbaac2e" />
+
+
+1. Create New Analysis
+* Generates a tree structure given a root folder (raw/, segmented_frames/, segmented_stack/, finetune/).
+
+2. 2D and 3D visualization
+* Load images (single frame or 3D stack),
+* Smooth navigation across z-stacks.
+
+3. Model's Parameters adjustable through interface
+
+<img width="490" height="549" alt="Segmentation" src="https://github.com/user-attachments/assets/e4f4053e-3639-4c65-b96a-32d0588d6f32" />
+
+4. Segmentation
+* Uses Cellpose-SAM or user's custom model,
+* Segments 2D/3D images,
+* Automatically uses GPU if available.
+
+4bis. Interactive Annotation using Microscopy SAM (refer to their [documentation](https://computational-cell-analytics.github.io/micro-sam/micro_sam.html) )
+* Uses SAM for Microscopy (microsam),
+* Adds rectangles, squares, circles, points, etc. to define regions of interest,
+* Erases wrong labels,
+  
+<img width="491" height="551" alt="Finetune" src="https://github.com/user-attachments/assets/d77fbd66-fe0e-4fc5-81a0-5e6217fb889f" />
+
+5. Finetuning
+* Saves each image/mask into finetune/ folder by default (custom path can be provided),
+* Selects your annotations to finetune a Cellpose model,
+* Parameters (epochs, learning rate, name) adjustable through interface,
+* Launch training directly from Napari,
+* Automatically uses GPU if available.
+
+<img width="487" height="546" alt="Others" src="https://github.com/user-attachments/assets/5a76d644-c855-41cb-b31c-a1191a88c1d2" />
+
+6. Others (Morphology)
+* Automatically renames one layer into 'committed_objects',
+* Applies morphological operations (Erode, Dilate, Open, Close)
 
 
 ## Contributing
