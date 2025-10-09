@@ -27,6 +27,7 @@ https://napari.org/stable/plugins/index.html
 This Napari plugin was developed to simplify annotation, segmentation, and finetuning of Cellpose models directly within a graphical interface.
 Combining strengths of Cellpose-SAM and SAM for Microscopy (microsam), it is designed for biologists, imaging engineers, and data scientists who want to unify their analysis pipeline without relying on the command line.
 
+You can find the video of the [demo](https://youtu.be/pRMSdBIrcr4)
 ## Installation
 ### Local installation
 
@@ -99,7 +100,7 @@ pip install git+https://github.com/Curiemeline/napari-cellpose-sam.git
 * Segments 2D/3D images,
 * Automatically uses GPU if available.
 
-4bis. Interactive Annotation using Microscopy SAM (refer to their [documentation] (https://computational-cell-analytics.github.io/micro-sam/micro_sam.html) )
+4bis. Interactive Annotation using Microscopy SAM (refer to their [documentation](https://computational-cell-analytics.github.io/micro-sam/micro_sam.html) )
 * Uses SAM for Microscopy (microsam),
 * Adds rectangles, squares, circles, points, etc. to define regions of interest,
 * Erases wrong labels,
