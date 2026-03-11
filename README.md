@@ -1,4 +1,4 @@
-# napari-cellpose-sam
+# SALT
 
 [![License BSD-3](https://img.shields.io/pypi/l/napari-cellpose-sam.svg?color=green)](https://github.com/Curiemeline/napari-cellpose-sam/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/napari-cellpose-sam.svg?color=green)](https://pypi.org/project/napari-cellpose-sam)
