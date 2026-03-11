@@ -1,11 +1,11 @@
 # SALT
 
-[![License BSD-3](https://img.shields.io/pypi/l/napari-cellpose-sam.svg?color=green)](https://github.com/Curiemeline/napari-cellpose-sam/raw/main/LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/napari-cellpose-sam.svg?color=green)](https://pypi.org/project/napari-cellpose-sam)
-[![Python Version](https://img.shields.io/pypi/pyversions/napari-cellpose-sam.svg?color=green)](https://python.org)
-[![tests](https://github.com/Curiemeline/napari-cellpose-sam/workflows/tests/badge.svg)](https://github.com/Curiemeline/napari-cellpose-sam/actions)
-[![codecov](https://codecov.io/gh/Curiemeline/napari-cellpose-sam/branch/main/graph/badge.svg)](https://codecov.io/gh/Curiemeline/napari-cellpose-sam)
-[![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-cellpose-sam)](https://napari-hub.org/plugins/napari-cellpose-sam)
+[![License BSD-3](https://img.shields.io/pypi/l/SALT.svg?color=green)](https://github.com/Curiemeline/SALT/raw/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/SALT.svg?color=green)](https://pypi.org/project/SALT)
+[![Python Version](https://img.shields.io/pypi/pyversions/SALT.svg?color=green)](https://python.org)
+[![tests](https://github.com/Curiemeline/SALT/workflows/tests/badge.svg)](https://github.com/Curiemeline/SALT/actions)
+[![codecov](https://codecov.io/gh/Curiemeline/SALT/branch/main/graph/badge.svg)](https://codecov.io/gh/Curiemeline/SALT)
+[![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/SALT)](https://napari-hub.org/plugins/SALT)
 [![npe2](https://img.shields.io/badge/plugin-npe2-blue?link=https://napari.org/stable/plugins/index.html)](https://napari.org/stable/plugins/index.html)
 [![Copier](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-purple.json)](https://github.com/copier-org/copier)
 
@@ -34,15 +34,15 @@ You can find the video of the [demo](https://youtu.be/pRMSdBIrcr4)
 1. Create a conda environment on python 3.10:
 
 ````
-conda create -n cellpose-sam python=3.10
-conda activate cellpose-sam
+conda create -n salt python=3.10
+conda activate salt
 ````
 
 2. Fetch the code from this repository and move to the directory:
 
 ````
-git clone https://github.com/Curiemeline/napari-cellpose-sam.git
-cd napari-cellpose-sam
+git clone https://github.com/Curiemeline/SALT
+cd SALT
 ````
 
 3. Install the plugin locally:
@@ -61,22 +61,22 @@ conda install -c conda-forge micro_sam
 
 <!-- ### Online installation (when plugin published on PyPi)
 
-You can install `napari-cellpose-sam` via [pip]:
+You can install `SALT` via [pip]:
 
 ```
-pip install napari-cellpose-sam
+pip install salt
 ```
 
-If napari is not already installed, you can install `napari-cellpose-sam` with napari and Qt via:
+If napari is not already installed, you can install `SALT` with napari and Qt via:
 
 ```
-pip install "napari-cellpose-sam[all]"
+pip install "salt[all]"
 ```
 
 To install latest development version :
 
 ```
-pip install git+https://github.com/Curiemeline/napari-cellpose-sam.git
+pip install git+https://github.com/Curiemeline/SALT
 ``` -->
 
 
@@ -129,7 +129,7 @@ the coverage at least stays the same before you submit a pull request.
 ## License
 
 Distributed under the terms of the [BSD-3] license,
-"napari-cellpose-sam" is free and open source software
+"SALT" is free and open source software
 
 ## Issues
 
